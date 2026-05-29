@@ -1,0 +1,20 @@
+{
+  "name": "pet-pooja-pwa",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pet Pooja Fastfood — Production PWA ordering app",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^6.3.0",
+    "vite-plugin-pwa": "^1.0.0"
+  },
+  "dependencies": {
+    "html2canvas": "^1.4.1",
+    "idb-keyval": "^6.2.1"
+  }
+}

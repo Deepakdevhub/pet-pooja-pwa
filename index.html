@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#FF6B35" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="description" content="Pet Pooja Fastfood — Order Pizza, Burger, Grill, Sandwich, Toast & Shakes. Fast delivery, fresh ingredients!" />
+  <meta name="keywords" content="pet pooja, fastfood, pizza, burger, grill, order online, delivery" />
+
+  <!-- Preconnect for fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Apple Touch Icon -->
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+
+  <title>Pet Pooja Fastfood</title>
+
+  <!-- Critical inline styles for instant first paint -->
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #FFF8F0;
+      color: #2D2D2D;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    #app-loader {
+      position: fixed; inset: 0; z-index: 9999;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #FF6B35 0%, #C13515 100%);
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+    #app-loader.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+    #app-loader .logo-text {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.5rem; font-weight: 800;
+      color: white; letter-spacing: -1px;
+      text-shadow: 0 2px 12px rgba(0,0,0,.15);
+    }
+    #app-loader .tagline {
+      color: rgba(255,255,255,.85);
+      font-size: 1rem; margin-top: 4px;
+    }
+    #app-loader .spinner {
+      margin-top: 32px; width: 36px; height: 36px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-top-color: white; border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <!-- Splash loader — shows instantly while JS loads -->
+  <div id="app-loader">
+    <div style="font-size:3.5rem;margin-bottom:8px;">🍕</div>
+    <div class="logo-text">Pet Pooja</div>
+    <div class="tagline">Fastfood</div>
+    <div class="spinner"></div>
+  </div>
+
+  <!-- App mount point -->
+  <div id="app"></div>
+
+  <!-- Toast container -->
+  <div id="toast-container"></div>
+
+  <!-- Modal container -->
+  <div id="modal-overlay"></div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
