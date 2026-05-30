@@ -238,10 +238,13 @@ export async function onRequest(context) {
       const extrasTotal = (extras || []).reduce((s, e) => s + e.price, 0);
       const total = subtotal + extrasTotal - (discount || 0);
 
+      const orderUserMobile = user.mobile || 'Admin';
+      const orderUserName = user.name || 'Admin';
+
       await DB.prepare(
         `INSERT INTO orders (id,order_num,user_mobile,user_name,items,extras,notes,coupon,subtotal,extras_total,discount,total,status,mode,cutlery,created_at)
          VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,'active',?13,?14,datetime('now'))`
-      ).bind(id, orderNum, user.mobile, user.name, JSON.stringify(items), JSON.stringify(extras || []),
+      ).bind(id, orderNum, orderUserMobile, orderUserName, JSON.stringify(items), JSON.stringify(extras || []),
         notes || null, coupon || null, subtotal, extrasTotal, discount || 0, total, mode || 'online', cutlery ? 1 : 0).run();
 
       // Cash entry
@@ -253,7 +256,7 @@ export async function onRequest(context) {
       await logToDB(DB, 'info', 'Order placed', JSON.stringify({ orderNum, total }));
 
       return json({
-        id, orderNum, customer: { name: user.name, mobile: user.mobile },
+        id, orderNum, customer: { name: orderUserName, mobile: orderUserMobile },
         items, extras: extras || [], notes, coupon, subtotal, extrasTotal,
         discount: discount || 0, total, status: 'active', mode: mode || 'online',
         cutlery: !!cutlery, createdAt: new Date().toISOString(),
