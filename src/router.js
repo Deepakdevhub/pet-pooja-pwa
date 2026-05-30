@@ -101,6 +101,13 @@ async function handleRoute() {
       document.title = `${routeConfig.title} — Pet Pooja`;
     }
 
+    // Add route-specific body class for CSS scopes (like cart-strip)
+    if (path === '/home') {
+      document.body.classList.add('page-home');
+    } else {
+      document.body.classList.remove('page-home');
+    }
+
     // Animate in
     appContainer.classList.add('page-enter');
     setTimeout(() => appContainer.classList.remove('page-enter'), 350);

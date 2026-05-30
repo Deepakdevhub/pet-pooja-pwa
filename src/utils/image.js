@@ -23,7 +23,6 @@ export function pickImageFile() {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
-    input.capture = 'environment'; // prefer camera on mobile
     input.addEventListener('change', () => {
       resolve(input.files?.[0] || null);
     });

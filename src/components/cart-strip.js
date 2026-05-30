@@ -28,14 +28,19 @@ export function initCartStrip() {
   stripEl.className = 'cart-strip';
   stripEl.id = 'cart-strip';
   stripEl.innerHTML = `
-    <div class="cart-strip-inner" id="cart-strip-inner" role="button" tabindex="0" aria-label="View cart">
-      <div class="cart-strip-left">
-        <div class="cart-strip-count" id="cart-strip-count">0 items</div>
-        <div class="cart-strip-total" id="cart-strip-total">${formatPrice(0)}</div>
+    <div class="cart-strip-inner" id="cart-strip-inner">
+      <div class="cart-strip-view-btn" id="cart-strip-view" role="button" tabindex="0" aria-label="View cart">
+        <div class="cart-strip-left">
+          <div class="cart-strip-count" id="cart-strip-count">0 items</div>
+          <div class="cart-strip-total" id="cart-strip-total">${formatPrice(0)}</div>
+        </div>
+        <div class="cart-strip-right">
+          <span>View Order</span>
+          <span class="arrow">→</span>
+        </div>
       </div>
-      <div class="cart-strip-right">
-        <span>View Order</span>
-        <span class="arrow">→</span>
+      <div class="cart-strip-clear-btn" id="cart-strip-clear" role="button" tabindex="0" aria-label="Clear cart">
+        <span>Clear</span>
       </div>
     </div>
   `;
@@ -46,8 +51,16 @@ export function initCartStrip() {
   totalEl = document.getElementById('cart-strip-total');
 
   // Navigate to cart on click
-  document.getElementById('cart-strip-inner').addEventListener('click', () => {
+  document.getElementById('cart-strip-view').addEventListener('click', () => {
     navigate('/cart');
+  });
+
+  // Clear cart
+  document.getElementById('cart-strip-clear').addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (confirm('Clear your cart?')) {
+      Store.clearCart();
+    }
   });
 
   // Listen for cart changes
