@@ -152,28 +152,23 @@ export function renderAuth(container) {
   verifyBtn.addEventListener('click', async () => {
     const code = Array.from(codeDigits).map(d => d.value).join('');
 
-    if (code !== CONFIG.auth.customerCode) {
-      codeError.style.display = 'block';
-      codeGroup.style.animation = 'shake 0.4s';
-      setTimeout(() => codeGroup.style.animation = '', 400);
-      vibrate(200);
-      return;
-    }
-
     verifyBtn.disabled = true;
-    verifyBtn.textContent = 'Creating account...';
+    verifyBtn.textContent = 'Verifying...';
 
     try {
-      await Store.setUser({
-        name,
-        mobile,
-        createdAt: new Date().toISOString(),
-      });
+      await Store.customerLogin(name, mobile, code);
       vibrate(50);
       showToast(`Welcome, ${name}! 🎉`, 'success');
       navigate('/home');
     } catch (err) {
-      showToast('Failed to create account. Try again.', 'error');
+      if (err.message.includes('Invalid code') || err.message.includes('401')) {
+        codeError.style.display = 'block';
+        codeGroup.style.animation = 'shake 0.4s';
+        setTimeout(() => codeGroup.style.animation = '', 400);
+        vibrate(200);
+      } else {
+        showToast('Connection error. Check your internet.', 'error');
+      }
       verifyBtn.disabled = false;
       verifyBtn.textContent = 'Create Account ✓';
     }

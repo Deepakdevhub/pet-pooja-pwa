@@ -1,0 +1,11 @@
+# ═══════════════════════════════════════════════════════════
+# PET POOJA — Cloudflare Pages Configuration
+# ═══════════════════════════════════════════════════════════
+name = "pet-pooja-pwa"
+compatibility_date = "2024-12-01"
+pages_build_output_dir = "dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "pet-pooja-db"
+database_id = "087cea6a-637d-4396-a5d8-6705229a805b"

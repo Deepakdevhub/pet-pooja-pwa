@@ -31,12 +31,8 @@ export const CONFIG = {
     mapUrl: 'https://maps.google.com/?q=Pet+Pooja+Fastfood',
   },
 
-  /* ── Auth ───────────────────────────────────────── */
-  auth: {
-    customerCode: '7777',
-    // SHA-256 of '223311' — compared as hash, never stored as plain
-    adminCodeHash: '223311',
-  },
+  /* ── API ─────────────────────────────────────────── */
+  apiBase: '/api',   // Pages Functions — same domain, no CORS
 
   /* ── Store Hours ────────────────────────────────── */
   storeHours: {
