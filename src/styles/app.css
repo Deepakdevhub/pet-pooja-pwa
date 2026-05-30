@@ -140,6 +140,21 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Desktop: constrain to mobile width */
+#app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  position: relative;
+}
+@media (min-width: 481px) {
+  body { background: #f0ebe4; }
+  #app {
+    background: var(--c-bg);
+    box-shadow: 0 0 40px rgba(0,0,0,.08);
+  }
+}
+
 img, svg, video { max-width: 100%; display: block; }
 button, input, select, textarea { font: inherit; color: inherit; }
 a { color: inherit; text-decoration: none; }

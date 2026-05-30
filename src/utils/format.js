@@ -14,7 +14,11 @@ export function formatPrice(amount) {
  * Format date to readable string
  */
 export function formatDate(isoString) {
-  const d = new Date(isoString);
+  if (!isoString) return '—';
+  // D1 returns "2026-05-30 13:27:19", JS needs ISO "2026-05-30T13:27:19Z"
+  const fixed = isoString.includes('T') ? isoString : isoString.replace(' ', 'T') + 'Z';
+  const d = new Date(fixed);
+  if (isNaN(d.getTime())) return '—';
   return d.toLocaleDateString('en-IN', {
     day: 'numeric',
     month: 'short',
@@ -26,7 +30,10 @@ export function formatDate(isoString) {
  * Format time
  */
 export function formatTime(isoString) {
-  const d = new Date(isoString);
+  if (!isoString) return '—';
+  const fixed = isoString.includes('T') ? isoString : isoString.replace(' ', 'T') + 'Z';
+  const d = new Date(fixed);
+  if (isNaN(d.getTime())) return '—';
   return d.toLocaleTimeString('en-IN', {
     hour: '2-digit',
     minute: '2-digit',
@@ -45,8 +52,11 @@ export function formatDateTime(isoString) {
  * Relative time (e.g., "2 min ago")
  */
 export function timeAgo(isoString) {
+  if (!isoString) return '—';
+  const fixed = isoString.includes('T') ? isoString : isoString.replace(' ', 'T') + 'Z';
   const now = Date.now();
-  const then = new Date(isoString).getTime();
+  const then = new Date(fixed).getTime();
+  if (isNaN(then)) return '—';
   const diff = Math.floor((now - then) / 1000);
 
   if (diff < 60) return 'Just now';

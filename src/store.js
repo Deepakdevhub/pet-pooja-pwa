@@ -52,6 +52,12 @@ export async function initStore() {
   state.token = (await get('pp_token')) || null;
   state.user = (await get('pp_user')) || null;
   state.pushSub = (await get('pp_push_sub')) || null;
+  state.settings.adminAuth = (await get('pp_admin_auth')) || false;
+  // Load admin token if admin session persisted
+  const adminToken = await get('pp_admin_token');
+  if (adminToken && state.settings.adminAuth) {
+    state.token = adminToken; // prefer admin token if admin was authed
+  }
 
   // Sync from server if we have a token
   if (state.token) {
@@ -269,6 +275,8 @@ export async function adminLogin(code) {
     state.settings.adminAuth = true;
     state.token = data.token;
     await set('pp_token', data.token);
+    await set('pp_admin_token', data.token);
+    await set('pp_admin_auth', true);
     emit('admin:authed', true);
     // Sync admin data
     try {
@@ -289,9 +297,12 @@ export async function adminLogin(code) {
 
 export async function adminLogout() {
   state.settings.adminAuth = false;
-  // Restore customer token if we have user data
-  if (state.user) {
-    // Keep the customer token — admin token was temporary
+  await set('pp_admin_auth', false);
+  await del('pp_admin_token');
+  // Restore customer token if available
+  const customerToken = await get('pp_token');
+  if (state.user && customerToken) {
+    state.token = customerToken;
   }
   emit('admin:authed', false);
 }
@@ -306,7 +317,7 @@ export function getCashEntries() { return state.cashEntries; }
 export function getTodayRevenue() {
   const today = new Date().toISOString().slice(0, 10);
   return state.cashEntries
-    .filter(e => e.created_at?.startsWith(today) || e.createdAt?.startsWith(today))
+    .filter(e => (e.createdAt || '').startsWith(today))
     .reduce((sum, e) => sum + (e.type === 'in' ? e.amount : -e.amount), 0);
 }
 

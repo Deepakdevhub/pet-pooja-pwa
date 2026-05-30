@@ -56,6 +56,18 @@ const json = (data, status = 200) => new Response(JSON.stringify(data), {
 });
 const err = (msg, status = 400) => json({ error: msg }, status);
 
+// ── Snake_case → camelCase mapper ───────────────────────
+function camel(obj) {
+  if (Array.isArray(obj)) return obj.map(camel);
+  if (!obj || typeof obj !== 'object') return obj;
+  const out = {};
+  for (const [k, v] of Object.entries(obj)) {
+    const ck = k.replace(/_([a-z])/g, (_, c) => c.toUpperCase());
+    out[ck] = v;
+  }
+  return out;
+}
+
 // ── Main handler ────────────────────────────────────────
 export async function onRequest(context) {
   const { request, env, params } = context;
@@ -112,7 +124,7 @@ export async function onRequest(context) {
       ).bind(mobile, name).run();
 
       const token = await signJWT({
-        mobile, name, role: 'customer', exp: Math.floor(Date.now() / 1000) + 30 * 86400,
+        mobile, name, role: 'customer', exp: Math.floor(Date.now() / 1000) + 7 * 86400,
       }, JWT_SECRET);
 
       // Log
@@ -129,7 +141,7 @@ export async function onRequest(context) {
       if (codeHash !== expected) return err('Invalid admin code', 401);
 
       const token = await signJWT({
-        role: 'admin', exp: Math.floor(Date.now() / 1000) + 8 * 3600,
+        role: 'admin', exp: Math.floor(Date.now() / 1000) + 7 * 86400,
       }, JWT_SECRET);
 
       await logToDB(DB, 'info', 'Admin login successful');
@@ -145,7 +157,7 @@ export async function onRequest(context) {
       ).all();
       // Parse tags JSON
       const items = results.map(r => ({
-        ...r, available: !!r.available, tags: r.tags ? JSON.parse(r.tags) : [],
+        ...camel(r), available: !!r.available, tags: r.tags ? JSON.parse(r.tags) : [],
       }));
       return json(items);
     }
@@ -200,7 +212,7 @@ export async function onRequest(context) {
         ({ results } = await DB.prepare('SELECT * FROM orders WHERE user_mobile=?1 ORDER BY created_at DESC LIMIT 50').bind(user.mobile).all());
       }
       const orders = results.map(r => ({
-        ...r, items: JSON.parse(r.items), extras: r.extras ? JSON.parse(r.extras) : [],
+        ...camel(r), items: JSON.parse(r.items), extras: r.extras ? JSON.parse(r.extras) : [],
         cutlery: !!r.cutlery,
         customer: { name: r.user_name, mobile: r.user_mobile },
       }));
@@ -288,7 +300,10 @@ export async function onRequest(context) {
     if (path === '/customers' && method === 'GET') {
       requireAdmin();
       const { results } = await DB.prepare('SELECT * FROM users ORDER BY last_seen DESC').all();
-      return json(results);
+      return json(results.map(r => ({
+        ...camel(r), firstSeen: r.created_at, lastSeen: r.last_seen,
+        orderCount: 0, totalSpent: 0,
+      })));
     }
 
     // ══════════════════════════════════════════════════════
@@ -297,7 +312,7 @@ export async function onRequest(context) {
     if (path === '/cash' && method === 'GET') {
       requireAdmin();
       const { results } = await DB.prepare('SELECT * FROM cash_entries ORDER BY created_at DESC LIMIT 500').all();
-      return json(results);
+      return json(camel(results));
     }
 
     if (path === '/cash' && method === 'POST') {
@@ -333,7 +348,7 @@ export async function onRequest(context) {
     if (path === '/logs' && method === 'GET') {
       requireAdmin();
       const { results } = await DB.prepare('SELECT * FROM app_logs ORDER BY created_at DESC LIMIT 500').all();
-      return json(results.map(r => ({ ...r, details: r.details ? JSON.parse(r.details) : null })));
+      return json(results.map(r => ({ ...camel(r), details: r.details ? JSON.parse(r.details) : null })));
     }
 
     if (path === '/logs' && method === 'DELETE') {
