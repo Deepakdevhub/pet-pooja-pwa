@@ -150,16 +150,19 @@ export function renderCart(container) {
     if (plus) {
       const qty = Store.getCartItemQty(plus.dataset.id);
       Store.updateCartQty(plus.dataset.id, qty + 1);
+      if (navigator.vibrate) navigator.vibrate(15);
       renderCart(container); // Re-render
     }
     if (minus) {
       const qty = Store.getCartItemQty(minus.dataset.id);
       Store.updateCartQty(minus.dataset.id, qty - 1);
+      if (navigator.vibrate) navigator.vibrate(15);
       renderCart(container);
     }
     if (remove) {
       Store.removeFromCart(remove.dataset.id);
       showToast('Item removed', 'info');
+      if (navigator.vibrate) navigator.vibrate(30);
       renderCart(container);
     }
   });
@@ -171,6 +174,7 @@ export function renderCart(container) {
       if (item) {
         Store.addToCart(item);
         showToast(`${item.name} added!`, 'success');
+        if (navigator.vibrate) navigator.vibrate(20);
         renderCart(container);
       }
     });
@@ -193,6 +197,7 @@ export function renderCart(container) {
 
   // Proceed
   document.getElementById('cart-proceed').addEventListener('click', () => {
+    if (navigator.vibrate) navigator.vibrate(30);
     // Store notes and coupon in sessionStorage for verify page
     sessionStorage.setItem('pp_order_notes', orderNotes);
     sessionStorage.setItem('pp_order_coupon', couponCode);

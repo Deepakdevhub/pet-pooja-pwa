@@ -124,6 +124,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
   scroll-behavior: smooth;
 }
 
@@ -632,6 +633,124 @@ textarea.input { min-height: 80px; resize: vertical; }
   padding: 1px 6px;
   border-radius: var(--r-pill);
 }
+/* ── Store Status Banner ── */
+.store-status-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+  padding: var(--sp-8) var(--sp-16);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+}
+.store-status-banner.open { color: var(--c-success); background: #E8F5E920; }
+.store-status-banner.closed { color: var(--c-danger); background: #FFEBEE40; }
+.status-dot {
+  width: 8px; height: 8px;
+  border-radius: var(--r-full);
+  flex-shrink: 0;
+}
+.store-status-banner.open .status-dot { background: var(--c-success); animation: pulse-dot 2s infinite; }
+.store-status-banner.closed .status-dot { background: var(--c-danger); }
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .4; }
+}
+
+/* ── Last Order Reorder Banner ── */
+.last-order-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-12);
+  margin: var(--sp-8) var(--sp-16);
+  padding: var(--sp-12) var(--sp-16);
+  background: linear-gradient(135deg, #FFF3E0, #FFF8F0);
+  border-radius: var(--r-lg);
+  border: 1px solid #FFE0B220;
+}
+.last-order-info {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+  flex: 1;
+  min-width: 0;
+}
+.last-order-icon { font-size: 1.3rem; flex-shrink: 0; }
+.last-order-title { font-size: var(--fs-xs); font-weight: var(--fw-bold); color: var(--c-text); }
+.last-order-items {
+  font-size: 11px;
+  color: var(--c-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+/* ── Smart Install Banner ── */
+.install-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+  margin: var(--sp-8) var(--sp-16);
+  padding: var(--sp-10) var(--sp-16);
+  background: linear-gradient(135deg, var(--c-primary), var(--c-primary-dark));
+  border-radius: var(--r-lg);
+  color: white;
+}
+.install-banner.hidden { display: none; }
+.install-banner-text {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+  flex: 1;
+}
+.install-banner-title { font-size: var(--fs-sm); font-weight: var(--fw-bold); }
+.install-banner-desc { font-size: 11px; opacity: .85; }
+.install-banner .btn { background: white; color: var(--c-primary); flex-shrink: 0; }
+.install-banner-close {
+  background: none; border: none; color: white; opacity: .7;
+  font-size: 1rem; cursor: pointer; padding: var(--sp-4);
+}
+.install-banner-close:hover { opacity: 1; }
+
+/* ── Popular Badge ── */
+.popular-badge {
+  background: linear-gradient(135deg, #FF6B35, #E53935) !important;
+  color: white !important;
+}
+
+/* ── Skeleton Loading ── */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: var(--r-md);
+}
+.skeleton-card {
+  height: 200px;
+  border-radius: var(--r-xl);
+}
+.skeleton-text {
+  height: 14px;
+  margin-bottom: var(--sp-8);
+  width: 70%;
+}
+.skeleton-text-sm {
+  height: 10px;
+  width: 50%;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── UPI Section ── */
+.upi-pay-section {
+  margin-bottom: var(--sp-16);
+}
+.upi-pay-section .btn {
+  font-size: var(--fs-sm);
+}
 
 /* ── Hero Section ── */
 .hero {
@@ -951,8 +1070,8 @@ textarea.input { min-height: 80px; resize: vertical; }
   color: var(--c-text-price);
 }
 .menu-card-add {
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   border-radius: var(--r-full);
   background: var(--c-primary);
   color: white;
@@ -964,8 +1083,9 @@ textarea.input { min-height: 80px; resize: vertical; }
   cursor: pointer;
   transition: all var(--t-fast) var(--ease-spring);
   line-height: 1;
+  -webkit-tap-highlight-color: transparent;
 }
-.menu-card-add:active { transform: scale(1.2); }
+.menu-card-add:active { transform: scale(1.15); }
 
 /* Quantity stepper (replaces add button when qty > 0) */
 .qty-stepper {
@@ -977,10 +1097,10 @@ textarea.input { min-height: 80px; resize: vertical; }
   overflow: hidden;
 }
 .qty-stepper button {
-  width: 30px; height: 30px;
+  width: 36px; height: 36px;
   border: none;
   background: transparent;
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: bold;
   cursor: pointer;
   display: flex;
@@ -988,6 +1108,7 @@ textarea.input { min-height: 80px; resize: vertical; }
   justify-content: center;
   color: var(--c-primary);
   transition: all var(--t-fast);
+  -webkit-tap-highlight-color: transparent;
 }
 .qty-stepper button:active { background: rgba(255,107,53,.15); }
 .qty-stepper .qty-value {
@@ -1690,7 +1811,13 @@ textarea.input { min-height: 80px; resize: vertical; }
   background: none; border: none;
   font-size: 1.2rem;
   cursor: pointer;
-  padding: var(--sp-4);
+  padding: var(--sp-8);
+  min-width: 40px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Admin auth overlay */

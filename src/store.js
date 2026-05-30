@@ -436,3 +436,38 @@ export function getTodayOrders() {
   const today = new Date().toISOString().slice(0, 10);
   return state.orders.filter(o => o.createdAt.startsWith(today));
 }
+
+// ─── Store Hours ────────────────────────────────────────
+export function isStoreOpen() {
+  const now = new Date();
+  const hour = now.getHours();
+  return hour >= CONFIG.storeHours.open && hour < CONFIG.storeHours.close;
+}
+
+export function getStoreHoursText() {
+  const o = CONFIG.storeHours.open;
+  const c = CONFIG.storeHours.close;
+  const fmt = (h) => `${h > 12 ? h - 12 : h} ${h >= 12 ? 'PM' : 'AM'}`;
+  return `${fmt(o)} – ${fmt(c)}`;
+}
+
+// ─── Last Order ─────────────────────────────────────────
+export function getLastOrder() {
+  const userOrders = state.orders.filter(o => o.customer?.mobile === state.user?.mobile && o.status !== 'cancelled');
+  return userOrders.length > 0 ? userOrders[0] : null;
+}
+
+// ─── Item Popularity ────────────────────────────────────
+export function getPopularItemIds() {
+  const counts = {};
+  for (const order of state.orders) {
+    if (order.status === 'cancelled') continue;
+    for (const item of order.items) {
+      counts[item.itemId] = (counts[item.itemId] || 0) + item.qty;
+    }
+  }
+  return Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(e => e[0]);
+}

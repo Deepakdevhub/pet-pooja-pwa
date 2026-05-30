@@ -137,6 +137,17 @@ export function renderVerify(container) {
           </div>
         </div>
 
+        <!-- Optional UPI Payment -->
+        ${CONFIG.upi?.enabled ? `
+          <div class="upi-pay-section" id="upi-pay-section">
+            <a href="upi://pay?pa=${CONFIG.upi.id}&pn=${encodeURIComponent(CONFIG.upi.name)}&am=${total}&cu=INR&tn=PetPooja+Order" 
+               class="btn btn-secondary btn-full" id="upi-pay-link" target="_blank" rel="noopener">
+              💳 Pay ₹${total} via UPI (Optional)
+            </a>
+            <p class="text-xs text-muted" style="text-align:center;margin-top:6px;">Opens your UPI app. Payment is optional — you can pay at counter too.</p>
+          </div>
+        ` : ''}
+
         <!-- Place Order -->
         <button class="btn btn-primary btn-full btn-lg mt-16" id="place-order-btn" disabled>
           🍕 Place Order — ${formatPrice(total)}

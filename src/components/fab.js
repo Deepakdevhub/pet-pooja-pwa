@@ -62,6 +62,10 @@ export function initFab() {
         <span class="fab-icon">💬</span>
         <span>WhatsApp</span>
       </button>
+      <button class="fab-action" id="fab-action-share" aria-label="Share Menu">
+        <span class="fab-icon">📤</span>
+        <span>Share Menu</span>
+      </button>
       <button class="fab-action" id="fab-action-admin" aria-label="Admin">
         <span class="fab-icon">👤</span>
         <span>Admin</span>
@@ -106,6 +110,25 @@ export function initFab() {
     closeFab();
     const link = getOwnerWhatsAppLink();
     window.open(link, '_blank');
+  });
+
+  // Action: Share Menu
+  document.getElementById('fab-action-share').addEventListener('click', () => {
+    closeFab();
+    if (navigator.share) {
+      navigator.share({
+        title: CONFIG.shop.fullName,
+        text: `Check out ${CONFIG.shop.fullName} — ${CONFIG.shop.heroTitle}! Order online:`,
+        url: window.location.origin
+      }).catch(() => {});
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(window.location.origin).then(() => {
+        showToast('Link copied! Share it with friends 📋', 'success');
+      }).catch(() => {
+        showToast('Share not supported on this browser', 'warning');
+      });
+    }
   });
 
   // Action: Admin

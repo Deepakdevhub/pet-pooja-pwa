@@ -38,6 +38,20 @@ export const CONFIG = {
     adminCodeHash: '223311',
   },
 
+  /* ── Store Hours ────────────────────────────────── */
+  storeHours: {
+    open: 10,   // 10 AM
+    close: 22,  // 10 PM
+    timezone: 'Asia/Kolkata',
+  },
+
+  /* ── UPI Payment ────────────────────────────────── */
+  upi: {
+    id: '8112287006@upi',       // Owner UPI ID
+    name: 'Pet Pooja Fastfood',
+    enabled: true,
+  },
+
   /* ── Order Modes ───────────────────────────────── */
   orderModes: [
     { id: 'online', label: 'Online', icon: '📱', active: true },
