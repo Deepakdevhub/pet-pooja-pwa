@@ -102,7 +102,7 @@
   --z-base: 1;
   --z-card: 10;
   --z-sticky: 100;
-  --z-fab: 200;
+  --z-fab: 350;
   --z-cart-strip: 300;
   --z-header: 400;
   --z-search: 500;
@@ -878,6 +878,7 @@ textarea.input { min-height: 80px; resize: vertical; }
   padding: 2px 8px;
   border-radius: var(--r-pill);
   font-weight: var(--fw-semibold);
+  pointer-events: none;
 }
 
 .menu-card-body {
@@ -923,6 +924,7 @@ textarea.input { min-height: 80px; resize: vertical; }
   line-height: 1.4;
   z-index: 2;
   text-transform: uppercase;
+  pointer-events: none;
 }
 
 /* Keep .menu-tag for search results & admin lists */
@@ -1332,6 +1334,10 @@ textarea.input { min-height: 80px; resize: vertical; }
   flex-direction: column-reverse;
   align-items: flex-end;
   gap: var(--sp-8);
+  pointer-events: none;
+}
+.fab-container > * {
+  pointer-events: auto;
 }
 
 .fab-main {
