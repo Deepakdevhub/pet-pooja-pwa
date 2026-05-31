@@ -96,6 +96,10 @@ export function sendReceiptToCustomer(order) {
     `— ${CONFIG.shop.fullName}`,
   );
 
+  if (order.customer.mobile === 'Admin') {
+    alert('Cannot send WhatsApp receipt to an Admin test order.');
+    return;
+  }
   const customerNumber = `91${order.customer.mobile}`;
   openWhatsApp(customerNumber, lines.join('\n'));
 }
