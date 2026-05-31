@@ -115,11 +115,40 @@ export function renderAdminOrders(container) {
   // Fulfill
   container.querySelectorAll('.fulfill-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
+      // Prompt before async task to allow popup
+      const wantsReceipt = confirm('Send receipt to customer on WhatsApp after fulfilling?');
+      let waTab = null;
+      if (wantsReceipt) {
+        waTab = window.open('', '_blank'); // Open synchronously to bypass popup blocker
+      }
+
       const order = await Store.fulfillOrder(btn.dataset.id);
       if (order) {
         showToast(`#${order.orderNum} fulfilled ✓`, 'success');
-        if (confirm('Send receipt to customer?')) sendReceiptToCustomer(order);
+        
+        if (wantsReceipt && waTab) {
+          if (order.customer.mobile === 'Admin') {
+            waTab.close();
+            showToast('Cannot send WhatsApp to Admin test orders', 'info');
+          } else {
+            // Generate WhatsApp URL
+            const lines = [
+              `✅ *Order Completed — Pet Pooja Fastfood*`,
+              ``,
+              `Hi ${order.customer.name}! Your order #${order.orderNum} is ready.`,
+              ``,
+              `*Items:*`,
+            ];
+            order.items.forEach((item, i) => lines.push(`${i + 1}. ${item.name} × ${item.qty}`));
+            lines.push(``, `*Total: ₹${order.total}*`, ``, `Thank you for ordering! 🙏`, `— Pet Pooja Fastfood`);
+            
+            const url = `https://wa.me/91${order.customer.mobile}?text=${encodeURIComponent(lines.join('\n'))}`;
+            waTab.location.href = url;
+          }
+        }
         renderAdminOrders(container);
+      } else if (waTab) {
+        waTab.close();
       }
     });
   });
@@ -128,17 +157,24 @@ export function renderAdminOrders(container) {
   container.querySelectorAll('.cancel-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
       const reason = prompt('Cancel reason:');
+      if (reason === null) return; // User clicked cancel
       await Store.cancelOrder(btn.dataset.id, reason || '');
       showToast('Order cancelled', 'warning');
       renderAdminOrders(container);
     });
   });
 
-  // Send receipt
+  // Send receipt (synchronous button)
   container.querySelectorAll('.send-receipt').forEach(btn => {
     btn.addEventListener('click', () => {
       const order = Store.getOrderById(btn.dataset.id);
-      if (order) sendReceiptToCustomer(order);
+      if (order) {
+        if (order.customer.mobile === 'Admin') {
+          showToast('Cannot send WhatsApp to Admin test orders', 'info');
+          return;
+        }
+        sendReceiptToCustomer(order);
+      }
     });
   });
 }

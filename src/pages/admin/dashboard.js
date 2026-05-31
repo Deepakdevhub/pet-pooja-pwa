@@ -135,12 +135,40 @@ export function renderAdminDashboard(container) {
   // Fulfill / Cancel
   container.querySelectorAll('.fulfill-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
+      // Prompt before async task to allow popup
+      const wantsReceipt = confirm('Send receipt to customer on WhatsApp?');
+      let waTab = null;
+      if (wantsReceipt) {
+        waTab = window.open('', '_blank'); // Open synchronously
+      }
+
       const order = await Store.fulfillOrder(btn.dataset.id);
       if (order) {
         showToast(`Order #${order.orderNum} fulfilled ✓`, 'success');
-        const sendReceipt = confirm('Send receipt to customer on WhatsApp?');
-        if (sendReceipt) sendReceiptToCustomer(order);
+        
+        if (wantsReceipt && waTab) {
+          if (order.customer.mobile === 'Admin') {
+            waTab.close();
+            showToast('Cannot send WhatsApp to Admin test orders', 'info');
+          } else {
+            // Generate WhatsApp URL
+            const lines = [
+              `✅ *Order Completed — Pet Pooja Fastfood*`,
+              ``,
+              `Hi ${order.customer.name}! Your order #${order.orderNum} is ready.`,
+              ``,
+              `*Items:*`,
+            ];
+            order.items.forEach((item, i) => lines.push(`${i + 1}. ${item.name} × ${item.qty}`));
+            lines.push(``, `*Total: ₹${order.total}*`, ``, `Thank you for ordering! 🙏`, `— Pet Pooja Fastfood`);
+            
+            const url = `https://wa.me/91${order.customer.mobile}?text=${encodeURIComponent(lines.join('\n'))}`;
+            waTab.location.href = url;
+          }
+        }
         renderAdminDashboard(container);
+      } else if (waTab) {
+        waTab.close();
       }
     });
   });
