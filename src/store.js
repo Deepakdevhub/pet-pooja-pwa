@@ -66,23 +66,25 @@ export async function initStore() {
   } else {
     // Load menu even without auth (public endpoint)
     try {
-      state.menu = await api('GET', '/menu');
+      state.menu = attachCategoryImages(await api('GET', '/menu'));
       await set('pp_menu', state.menu);
     } catch {
       state.menu = (await get('pp_menu')) || CONFIG.defaultMenu;
+      attachCategoryImages(state.menu);
     }
   }
 
   // Fallback to cached menu if empty
   if (!state.menu.length) {
     state.menu = (await get('pp_menu')) || CONFIG.defaultMenu;
+    attachCategoryImages(state.menu);
   }
 }
 
 async function syncFromServer() {
   // Parallel fetch for speed
   const [menu, orders, settings] = await Promise.all([
-    api('GET', '/menu'),
+    api('GET', '/menu').then(attachCategoryImages),
     api('GET', '/orders').catch(() => []),
     api('GET', '/settings').catch(() => ({})),
   ]);
@@ -96,6 +98,15 @@ async function syncFromServer() {
 // ─── User / Auth ────────────────────────────────────────
 export function getUser() { return state.user; }
 export function isLoggedIn() { return !!state.user && !!state.token; }
+
+function attachCategoryImages(menuArray) {
+  if (Array.isArray(menuArray)) {
+    menuArray.forEach(item => {
+      if (!item.img) item.img = `/images/${item.category}.png`;
+    });
+  }
+  return menuArray;
+}
 
 export async function setUser(userData) {
   // This is called from auth.js after server verification

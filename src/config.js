@@ -153,6 +153,13 @@ export const CONFIG = {
   },
 };
 
+// ── Auto-Assign Category Images ──
+CONFIG.defaultMenu.forEach(item => {
+  if (!item.img) {
+    item.img = `/images/${item.category}.png`;
+  }
+});
+
 /**
  * Get category config by ID
  */
