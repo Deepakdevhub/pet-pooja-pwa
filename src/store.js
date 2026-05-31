@@ -102,7 +102,7 @@ export function isLoggedIn() { return !!state.user && !!state.token; }
 function attachCategoryImages(menuArray) {
   if (Array.isArray(menuArray)) {
     menuArray.forEach(item => {
-      if (!item.img) item.img = `/images/${item.category}.png`;
+      if (!item.img) item.img = `/images/${item.category}.webp`;
     });
   }
   return menuArray;

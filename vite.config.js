@@ -18,7 +18,7 @@ export default defineConfig({
   plugins: [
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['icons/*.png', 'food/*.webp', 'sounds/*.mp3'],
+      includeAssets: ['icons/*.png', 'food/*.webp', 'sounds/*.mp3', 'images/*.webp'],
       manifest: {
         name: 'Pet Pooja Fastfood',
         short_name: 'Pet Pooja',
