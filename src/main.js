@@ -17,13 +17,7 @@ import { renderHome } from './pages/home.js';
 import { renderCart } from './pages/cart.js';
 import { renderVerify } from './pages/verify-order.js';
 import { renderOrderPlaced } from './pages/order-placed.js';
-import { renderAdminLogin } from './pages/admin-login.js';
-import { renderAdminDashboard } from './pages/admin/dashboard.js';
-import { renderMenuManager } from './pages/admin/menu-mgr.js';
-import { renderAdminOrders } from './pages/admin/orders.js';
-import { renderAdminCustomers } from './pages/admin/customers.js';
-import { renderAdminCash } from './pages/admin/cash.js';
-import { renderAdminLogs } from './pages/admin/logs.js';
+
 
 // ── Component imports ──
 import { initSearch } from './components/search.js';
@@ -96,13 +90,13 @@ async function boot() {
     route('/cart', renderCart, { title: 'Your Order', requiresAuth: true });
     route('/verify', renderVerify, { title: 'Verify Order', requiresAuth: true });
     route('/order-placed', renderOrderPlaced, { title: 'Order Placed!', requiresAuth: true });
-    route('/admin-login', renderAdminLogin, { title: 'Admin Login' });
-    route('/admin/dashboard', renderAdminDashboard, { title: 'Admin', requiresAdmin: true });
-    route('/admin/menu', renderMenuManager, { title: 'Menu Manager', requiresAdmin: true });
-    route('/admin/orders', renderAdminOrders, { title: 'Orders', requiresAdmin: true });
-    route('/admin/customers', renderAdminCustomers, { title: 'Customers', requiresAdmin: true });
-    route('/admin/cash', renderAdminCash, { title: 'Cash', requiresAdmin: true });
-    route('/admin/logs', renderAdminLogs, { title: 'Logs', requiresAdmin: true });
+    route('/admin-login', async (c) => (await import('./pages/admin-login.js')).renderAdminLogin(c), { title: 'Admin Login' });
+    route('/admin/dashboard', async (c) => (await import('./pages/admin/dashboard.js')).renderAdminDashboard(c), { title: 'Admin', requiresAdmin: true });
+    route('/admin/menu', async (c) => (await import('./pages/admin/menu-mgr.js')).renderMenuManager(c), { title: 'Menu Manager', requiresAdmin: true });
+    route('/admin/orders', async (c) => (await import('./pages/admin/orders.js')).renderAdminOrders(c), { title: 'Manage Orders', requiresAdmin: true });
+    route('/admin/customers', async (c) => (await import('./pages/admin/customers.js')).renderAdminCustomers(c), { title: 'Customers', requiresAdmin: true });
+    route('/admin/cash', async (c) => (await import('./pages/admin/cash.js')).renderAdminCash(c), { title: 'Cash Management', requiresAdmin: true });
+    route('/admin/logs', async (c) => (await import('./pages/admin/logs.js')).renderAdminLogs(c), { title: 'Logs', requiresAdmin: true });
 
     // 3. Initialize global components
     initSearch();

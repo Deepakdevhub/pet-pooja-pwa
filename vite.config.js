@@ -8,11 +8,7 @@ export default defineConfig({
     outDir: 'dist',
     assetsInlineLimit: 4096,
     rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['html2canvas', 'idb-keyval'],
-        },
-      },
+      // Allow Vite to automatically code-split dynamically imported libraries
     },
   },
   plugins: [
